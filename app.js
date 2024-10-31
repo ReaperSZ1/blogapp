@@ -8,6 +8,7 @@
     const usuarios = require('./routes/usuario') // carregando as rotas
     const path = require('path') // serve pra manipular pastas/diretórios
     const session = require("express-session")
+    const MongoStore = require('connect-mongo');
     const flash = require("connect-flash") // o flash é um tipo de session que aparece só uma vez e some quando da f5 na pagina
     require('./models/postagens')
     const postagem = mongoose.model('postagens')
@@ -16,7 +17,6 @@
     const passport = require('passport')
     require('./config/auth')(passport)
     require('dotenv').config();
-    // const db = require('./config/db')
 // Settings
     // MongoURI
         // verifica se vou rodar o server no local ou no server (eu acho)
@@ -52,7 +52,11 @@
         app.use(session({
             secret:'aicalica', // isso é usado para garantir que o ID da sessão seja seguro.
             resave: true, // salva a session automaticamente mesmo sem alterações
-            saveUninitialized: true // salva a session automaticamente mesmo sem dados ou que nao se iniciou
+            saveUninitialized: true, // salva a session automaticamente mesmo sem dados ou que nao se iniciou
+            store: MongoStore.create({
+                mongoUrl: process.env.MONGODB_URI, // Use sua URI do MongoDB
+                collectionName: 'sessions' // Nome da coleção onde as sessões serão armazenadas
+            })
         }))
         app.use(passport.initialize()) // configurações do passport
         app.use(passport.session())
