@@ -155,10 +155,12 @@
     "wrap-ansi": "^8.1.0",
     "wrap-ansi-cjs": "^7.0.0"
   },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC"
 }

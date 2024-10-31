@@ -15,8 +15,19 @@
     const categoria = mongoose.model('categorias') 
     const passport = require('passport')
     require('./config/auth')(passport)
-    const db = require('./config/db')
+    require('dotenv').config();
+    // const db = require('./config/db')
 // Settings
+    // MongoURI
+        // verifica se vou rodar o server no local ou no server (eu acho)
+        const mongoURI = process.env.NODE_ENV === 'production' 
+            ? process.env.MONGO_URI_PROD 
+            : process.env.MONGO_URI_DEV;
+
+        if (!mongoURI) {
+            console.error("Error: MongoDB URI is not defined.");
+            process.exit(1); // Interrompe a execução se a URI não estiver definida
+        }
     // Body-Parser
         app.use(bodyParser.urlencoded({extended: true}))
         app.use(bodyParser.json()) 
@@ -33,7 +44,8 @@
     // Public (mostrando onde é a pasta de arquivos estaticos para o express)
         app.use(express.static(path.join(__dirname, 'public'))) // path.join para encontrar o arquivo public 
     // Mongoose 
-        mongoose.connect(db.mongoURI) // esse mongouri determina se vai conectar pelo local ou pelo heroku
+    // local: mongodb://localhost/nomedadb
+        mongoose.connect(mongoURI) // esse mongouri determina se vai conectar pelo local ou pelo server
             .then(() => { console.log('conectado ao mongo'); })
             .catch((err) => { console.log('erro ao se conectar: ' + err); })
     // Session (siga essa orde recomendada)
